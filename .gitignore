@@ -1,3 +1,5 @@
 __pycache__/
 backtest/
 old/
+test/
+.alpha_vantage_apikey

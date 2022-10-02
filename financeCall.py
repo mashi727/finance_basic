@@ -24,6 +24,9 @@ from pyqtgraph import QtCore, QtGui
 
 # 自作のライブラリ
 from financeUi import Ui_MainWindow
+from commands.make_tableview_mode import *
+from api.fetch_ticker_symbol import *
+from api.prepare_dataframe import *
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -32,11 +35,24 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
 
         self.init_ui()
+        
+        # 検索キー（searchSymbol）が変更されたら、自動的にtableViewに表示
+        self.search_ticker_symbol.textEdited.connect(self.searchSymbol)
+        
+
         self.plot()
 
 
     def init_ui(self):
         self.setGeometry(100, 100, 2200, 1400)
+
+
+    def searchSymbol(self):
+        ticker_search_keyword = self.search_ticker_symbol.text() # Search Keywordの取得
+        self.tableView_ticker_symbols.setModel(make_masked_tableview_model(search_symbol(),ticker_search_keyword))
+        self.tableView_ticker_symbols.horizontalHeader().setStretchLastSection(False)
+        self.tableView_ticker_symbols.horizontalHeader().setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeMode(3)) # 3 -> Resize to contents
+        self.tableView_ticker_symbols.horizontalHeader().setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeMode(1)) # 1 -> stretch
 
     def plot(self):
         # Dockの準備
