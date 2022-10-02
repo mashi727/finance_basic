@@ -17,6 +17,7 @@ from datetime import datetime
 from PySide6.QtWidgets import QApplication, QMainWindow, QFileSystemModel, QWidget
 from PySide6.QtGui import Qt
 from PySide6 import QtWidgets
+from PySide6.QtWidgets import QMessageBox
 
 import pyqtgraph as pg
 from pyqtgraph.dockarea import Dock
@@ -38,7 +39,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         
         # 検索キー（searchSymbol）が変更されたら、自動的にtableViewに表示
         self.search_ticker_symbol.textEdited.connect(self.searchSymbol)
-        
+        #
+        self.tableView_ticker_symbols.doubleClicked.connect(lambda: self.plot_graph('fetch_4values'))
+
 
         self.plot()
 
@@ -53,6 +56,46 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.tableView_ticker_symbols.horizontalHeader().setStretchLastSection(False)
         self.tableView_ticker_symbols.horizontalHeader().setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeMode(3)) # 3 -> Resize to contents
         self.tableView_ticker_symbols.horizontalHeader().setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeMode(1)) # 1 -> stretch
+
+    def get_ticker_symbol(self):
+        index = self.tableView_ticker_symbols.currentIndex()
+        #company_name = self.tableView_ticker_symbols.model().index(index.row(), 1).data()
+        company_data = []
+        for i in range(2):
+            company_data.append(self.tableView_ticker_symbols.model().index(index.row(), i).data())
+        return company_data # ticker_symbol, 社名
+
+
+    def plot_graph(self, discriminator):
+        if discriminator=='fetch_4values':
+            print('Im in fetch_4values!')
+            company_data = self.get_ticker_symbol()
+            # for actual data
+            self.df_4values = fetch_4values(company_data, self.combobox_time_span.currentText()) # comboBox.current.Text()は、取得するspan
+            # テスト用に、ローカルファイルから四本値を読み込み
+            #self.df_4values.to_csv('data/aapl.csv')
+            #self.df_4values = pd.read_csv('./data/aapl.csv', index_col='date', parse_dates=True)
+            if not company_data:
+                #pass
+                QMessageBox.warning(None, "Notice!", "Ticker symbolを入力してください!", QMessageBox.Yes)
+            else:
+                # status barの表示
+                status_bar = self.statusBar() # 下にあるステータスバー
+                status_bar.showMessage('表示中の銘柄 : ' + str(company_data[1])) # 書きたいメッセージ
+                df = make_dataframe(self.df_4values, int(self.SB_sma_short.text()), int(self.SB_sma_med.text()), int(self.SB_sma_long.text()))
+                last_region = []
+                self.plot_stock(df, last_region)
+        else:
+            print('Im in update sma_values!')
+            df = make_dataframe(self.df_4values, int(self.SB_sma_short.text()), int(self.SB_sma_med.text()), int(self.SB_sma_long.text()))
+            last_region = [self.minx, self.maxx]
+            self.plot_stock(df, last_region)
+
+
+    def plot_stock(self, df, last_region):
+        print(df)
+        pass
+
 
     def plot(self):
         # Dockの準備

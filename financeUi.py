@@ -208,6 +208,7 @@ class Ui_MainWindow(object):
         self.combobox_time_span.addItem("")
         self.combobox_time_span.addItem("")
         self.combobox_time_span.addItem("")
+        self.combobox_time_span.addItem("")
         self.combobox_time_span.setObjectName(u"combobox_time_span")
         self.combobox_time_span.setMaximumSize(QSize(200, 16777215))
         self.combobox_time_span.setFont(font1)
@@ -366,6 +367,7 @@ class Ui_MainWindow(object):
         self.combobox_time_span.setItemText(2, QCoreApplication.translate("MainWindow", u"30min", None))
         self.combobox_time_span.setItemText(3, QCoreApplication.translate("MainWindow", u"15min", None))
         self.combobox_time_span.setItemText(4, QCoreApplication.translate("MainWindow", u"5min", None))
+        self.combobox_time_span.setItemText(5, QCoreApplication.translate("MainWindow", u"1min", None))
 
         self.label_Zaimu.setText(QCoreApplication.translate("MainWindow", u"\u8ca1\u52d9\u8af8\u8868", None))
         self.label_df.setText(QCoreApplication.translate("MainWindow", u"dataframe", None))

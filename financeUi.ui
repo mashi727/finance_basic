@@ -419,6 +419,11 @@
                   <string>5min</string>
                  </property>
                 </item>
+                <item>
+                 <property name="text">
+                  <string>1min</string>
+                 </property>
+                </item>
                </widget>
               </item>
              </layout>
