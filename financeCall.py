@@ -34,20 +34,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.setupUi(self)
-
         self.init_ui()
         
         # 検索キー（searchSymbol）が変更されたら、自動的にtableViewに表示
         self.search_ticker_symbol.textEdited.connect(self.searchSymbol)
-        #
         self.tableView_ticker_symbols.doubleClicked.connect(lambda: self.plot_graph('fetch_4values'))
-
 
         self.plot()
 
 
     def init_ui(self):
-        self.setGeometry(100, 100, 2200, 1400)
+        self.setGeometry(100, 100, 2400, 1400)
 
 
     def searchSymbol(self):
